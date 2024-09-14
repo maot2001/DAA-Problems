@@ -1,2 +1,2 @@
 # DAA-Problems
-Proyecto de Diseño y Analisis de Algoritmos
+Proyecto de Diseño y Análisis de Algoritmos
