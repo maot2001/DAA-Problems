@@ -37,6 +37,8 @@ else:
 
 Tu tarea es maximizar el puntaje después de que hayan pasado $N$ minutos.
 
-## Créditos
+## Grid
 
-El colegio de Yoan comienza la próxima semana. Hay $S$ asignaturas en total, y necesita elegir $K$ de ellas para asistir cada día, para cumplir con el número requerido de créditos para pasar el semestre. Hay $N+1$ edificios. Su hostal está en el edificio número $0$. La asignatura $i$ se enseña en el edificio $A_i$. Después de cada asignatura, hay un descanso durante el cual regresa a su hostal. Hay $M$ caminos bidireccionales de longitud $1$ que conectan el edificio $u$ con el edificio $v$. Encuentra la distancia total mínima posible que Yoan necesita recorrer cada día si elige sus asignaturas sabiamente.
+Un día iba David por su facultad cuando ve un cuadrado formado por $n \times n$ cuadraditos de color blanco. A su lado, un mensaje ponía lo siguiente: "Las siguientes tuplas de la forma $(x_1, y_1, x_2, y_2)$ son coordenadas para pintar de negro algunos rectángulos. (coordenadas de la esquina inferior derecha y superior izquierda)" Luego se veían $k$ tuplas de cuatro enteros. Finalmente decía: "Luego de tener el cuadrado coloreado de negro en las secciones pertinentes, su tarea es invertir el cuadrado a su estado original. En una operación puede seleccionar un rectángulo y pintar todas sus casillas de blanco. El costo de pintar de blanco un rectángulo de $h \times w$ es el mínimo entre $h$ y $w$. Encuentre el costo mínimo para pintar de blanco todo el cuadrado."
+
+En unos 10 minutos David fue capaz de resolver el problema. Desgraciadamente esto no es una película y el problema de David no era un problema del milenio que lo volviera millonario. Pero, ¿sería usted capaz de resolverlo también?
