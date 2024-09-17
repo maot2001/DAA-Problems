@@ -35,36 +35,3 @@ def are_graphs_isomorphic_matrix(adj_matrix1, adj_matrix2):
             return True  # Found a valid isomorphism
 
     return False  # No permutation resulted in an isomorphism
-
-G1 = np.array([[0, 0, 0, 1, 0],
-            [0, 0, 1, 0, 0],
-            [0, 1, 0, 1, 0],
-            [1, 0, 1, 0, 1],
-            [0, 0, 0, 1, 0]])
-
-G2 = np.array([[0, 1, 0, 0, 1],
-            [1, 0, 1, 1, 0],
-            [0, 1, 0, 0, 0],
-            [0, 1, 0, 0, 0],
-            [1, 0, 0, 0, 0]])
-
-
-# Comparar G1 y G2: True
-print(are_graphs_isomorphic_matrix(G1, G2))
-
-G3 = np.array([[0, 1, 0, 1, 0],
-            [1, 0, 1, 0, 0],
-            [0, 1, 0, 1, 0],
-            [1, 0, 1, 0, 1],
-            [0, 0, 0, 1, 0]])
-
-G4 = np.array([[0, 1, 0, 0, 1],
-            [1, 0, 1, 1, 0],
-            [0, 1, 0, 1, 0],
-            [0, 1, 1, 0, 0],
-            [1, 0, 0, 0, 0]])
-
-# Comparar G3 y G4: False
-print(are_graphs_isomorphic_matrix(G3, G4))
-
-
