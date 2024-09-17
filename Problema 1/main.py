@@ -3,21 +3,19 @@ from test import *
 from tester import *
 import networkx as nx
 import matplotlib.pyplot as plt
+from ullman import perm_constructor,isomorph
 
 
-examples = gen_examples(10)
+examples = gen_examples(500)
+flag=True
 for i in examples:
-    #print(f'\nmatrix A:\n{i[0]}')
-    #print(f'\nmatrix B:\n{i[1]}')
-    # Crear el grafo usando la matriz de adyacencia
-    G = nx.from_numpy_array(i[0])
+    print(f'\nmatrix A:\n{i[0]}')
+    print(f'\nmatrix B:\n{i[1]}')
 
-# Dibujar el grafo
-    nx.draw(G, with_labels=True)
-    plt.show()
-    G = nx.from_numpy_array(i[1])
-
-# Dibujar el grafo
-    nx.draw(G, with_labels=True)
-    plt.show()
-    are_graphs_isomorphic_matrix(i[0], i[1])
+    if(isomorph(i[0],i[1],perm_constructor(i[0],i[1]))!=are_graphs_isomorphic_matrix(i[0],i[1])):
+        print("Wrong Anwser")
+        flag=False
+        break
+    
+if(flag):
+    print("Accepted")
