@@ -1,21 +1,41 @@
 from gen import gen_examples
-from test import *
 from tester import *
-import networkx as nx
-import matplotlib.pyplot as plt
+import wl
+import axis
 from ullman import perm_constructor,isomorph
+from time import time
+import winsound
 
 
-examples = gen_examples(500)
-flag=True
-for i in examples:
-    print(f'\nmatrix A:\n{i[0]}')
-    print(f'\nmatrix B:\n{i[1]}')
+examples = gen_examples(10000)
+results, times = wl.sol_examples(examples)
+results2, times2 = axis.sol_examples(examples)
 
-    if(isomorph(i[0],i[1],perm_constructor(i[0],i[1]))!=are_graphs_isomorphic_matrix(i[0],i[1])):
-        print("Wrong Anwser")
-        flag=False
-        break
+count1, count2 = 0, 0
+
+for i in range(len(examples)):
+    ullman_test = isomorph(examples[i][0],examples[i][1],perm_constructor(examples[i][0],examples[i][1]))
+
+    test = are_graphs_isomorphic_matrix(examples[i][0],examples[i][1])
     
-if(flag):
-    print("Accepted")
+    if ullman_test != test:
+        winsound.Beep(2500, 3000)
+        print("\n\n\nWrong Tester\n\n\n")
+
+    if results[i] != test or results2[i] != test:
+        winsound.Beep(2500, 500)
+
+        if results[i] != test: count1 += 1
+        if results2[i] != test: count2 += 1
+
+        print(f'Test result: {test}')
+        print(f'WL result: {results[i]}')
+        print(f'Axis result: {results2[i]}\n')
+
+        print(f'\nmatrix A:\n{examples[i][0]}')
+        print(f'\nmatrix B:\n{examples[i][1]}\n')
+
+print(f'WL errors {count1/100}%')
+print(f'Axis errors {count2/100}%')
+winsound.Beep(2500, 1000)
+
