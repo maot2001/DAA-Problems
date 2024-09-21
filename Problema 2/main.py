@@ -1,23 +1,13 @@
 from Problema_2 import Gen
+from sol import sol_examples
+import winsound
+        
+problems = Gen(1000)
+sol = sol_examples(problems)
 
-problems = Gen(100)
-test = []
-for p in problems:
-    p.solve()
-    test.append(p.get_max())
-
-print(test)
-
-""" Errors
-data1.events = {1.5: 1, 2.5: 2, 4.5: 2, 6.5: 1, 7.5: 1, 9.5: 1, 10.5: 1, 11.5: 2}
-data2.events = {1.5: 1, 2.5: 1, 3.5: 2, 4.5: 2, 7.5: 1, 9.5: 2, 10.5: 2, 11.5: 2, 12.5: 1, 13.5: 1}
-data3.events = {2.5: 2, 3.5: 1, 4.5: 1, 5.5: 1, 6.5: 1, 7.5: 1, 9.5: 2, 10.5: 2, 11.5: 1, 14.5: 1}
-data4.events = {2.5: 1, 3.5: 1, 4.5: 1, 6.5: 1, 7.5: 2, 9.5: 1, 11.5: 1, 13.5: 2}
-data5.events = {1.5: 2, 3.5: 1, 4.5: 1, 5.5: 2, 6.5: 2, 7.5: 2, 8.5: 2, 9.5: 1, 10.5: 1, 11.5: 1, 13.5: 2}
-data6.events = {2.5: 2, 3.5: 1, 7.5: 1, 9.5: 2, 10.5: 1, 11.5: 2, 12.5: 2}
-data7.events = {1.5: 2, 2.5: 2, 3.5: 1, 5.5: 2, 6.5: 1, 8.5: 1, 10.5: 2, 12.5: 1}
-data8.events = {1.5: 1, 3.5: 1, 5.5: 1, 6.5: 1, 7.5: 2, 9.5: 2, 11.5: 1, 14.5: 1}
-data9.events = {1.5: 1, 2.5: 2, 4.5: 1, 5.5: 2, 6.5: 2, 7.5: 2, 9.5: 1}
-data10.events = {3.5: 2, 5.5: 1, 6.5: 1, 7.5: 2, 9.5: 1, 10.5: 2, 12.5: 2, 14.5: 1}
-data11.events = {1.5: 2, 3.5: 1, 4.5: 1, 6.5: 2, 8.5: 1, 9.5: 1, 10.5: 1, 12.5: 2, 13.5: 2}
-"""
+for i in range(len(problems)):
+    if i % 100 == 0: print(i)
+    problems[i].solve()
+    if problems[i].get_max() != sol[i]:
+        winsound.Beep(2500, 500)
+        print(f'\n\n{i} Bad:\n{problems[i].events}\n{problems[i].time}\nresult: {problems[i].get_max()}\nbad result {sol[i]}\n\n')
