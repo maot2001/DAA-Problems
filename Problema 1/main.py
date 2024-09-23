@@ -2,7 +2,7 @@ from gen import gen_examples
 from tester import *
 import wl
 import axis
-from ullman import perm_constructor,isomorph
+from ullman import perm_constructor
 from time import time
 import winsound
 
@@ -14,7 +14,7 @@ results2, times2 = axis.sol_examples(examples)
 count1, count2 = 0, 0
 
 for i in range(len(examples)):
-    ullman_test = isomorph(examples[i][0],examples[i][1],perm_constructor(examples[i][0],examples[i][1]))
+    ullman_test = perm_constructor(examples[i][0],examples[i][1])
 
     test = are_graphs_isomorphic_matrix(examples[i][0],examples[i][1])
     
