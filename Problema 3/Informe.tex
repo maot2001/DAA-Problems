@@ -1,0 +1,140 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuración para Python
+\lstset{
+    language=Python,               % Lenguaje del código
+    basicstyle=\ttfamily\footnotesize,  % Tipo de letra
+    keywordstyle=\color{blue},     % Color de las palabras clave
+    commentstyle=\color{green},    % Color de los comentarios
+    stringstyle=\color{red},       % Color de los strings
+    numbers=left,                  % Mostrar números de línea
+    numberstyle=\tiny\color{gray}, % Estilo de los números de línea
+    stepnumber=1,                  % Número de líneas entre números de línea
+    frame=single,                  % Marco alrededor del código
+    breaklines=true,               % Partir líneas largas
+    showstringspaces=false         % No mostrar espacios en los strings
+}
+
+\setcounter{secnumdepth}{3}
+
+\title{Informe Problema 3}
+\author{
+    Marco Antonio Ochil Trujillo \\
+    \and
+    Kevin Majim Ortega \'Alvarez \\
+    \and
+    Yoan René Ramos Corrales \\
+}
+\date{September 22, 2024}
+
+\begin{document}
+
+\maketitle
+
+
+
+\tableofcontents
+
+\chapter{Problema}
+
+\textbf{Grid}
+
+Un día iba David por su facultad cuando ve un cuadrado formado por $n \times n$ cuadraditos de color blanco. A su lado, un mensaje ponía lo siguiente: "Las siguientes tuplas de la forma $(x_1, y_1, x_2, y_2)$ son coordenadas para pintar de negro algunos rectángulos. (coordenadas de la esquina inferior derecha y superior izquierda)" Luego se veían $k$ tuplas de cuatro enteros. Finalmente decía: "Luego de tener el cuadrado coloreado de negro en las secciones pertinentes, su tarea es invertir el cuadrado a su estado original. En una operación puede seleccionar un rectángulo y pintar todas sus casillas de blanco.\\ El costo de pintar de blanco un rectángulo de $h \times w$ es el mínimo entre $h$ y $w$. Encuentre el costo mínimo para pintar de blanco todo el cuadrado."
+
+En unos 10 minutos David fue capaz de resolver el problema. Desgraciadamente esto no es una película y el problema de David no era un problema del milenio que lo volviera millonario. Pero, ¿sería usted capaz de resolverlo también?
+
+
+\chapter{Soluciones}
+
+\section{Observaciones Generales}
+Un rectángulo evidente que cubre a todos los rectángulos negros es el propio grid $n \times n$ , el coste sería el $\min(n,n) = n$, el cual acotaría a la solución de nuestro problema. Ahora si escogemos algún rectángulo $[x_1;x_2) \times [y_1;y_2)$, $ ( x_2 - x_1 \leq y_2 - y_1 )$ podemos sustituirlo por $[x_1;x_2) \times [0;n)$ sin cambiar el costo y cubriendo mas rectángulos negros, de igual forma podemos escoger $w$ rectángulos de ancho $1$ en vez de $1$ rectángulo de ancho $w$ sin cambiar el costo. De esta manera nuestro problema es reducido a determinar la cantidad mínima de rectángulos de ancho $1$ y largo $n$ necesarias para cubrir todos los rectángulos negros, o lo que es lo mismo determinar la cantidad mínima de filas y columnas a escoger tal que todo rectángulo negro sea cubierto por al menos una fila o columna.
+\newpage
+
+\section{Algoritmo de Fuerza Bruta}
+\subsection{Correctitud}
+Teniendo en cuenta las observaciones anteriores si tenemos un conjunto $S$ que agrupe todas las filas y columnas ,entonces nuestra solución está dada por el menor cardinal  de un subconjunto de $S$ que garantice que todos los rectángulos negros sean cubiertos por al menos una fila o columna del subconjunto escogido.
+\subsection{Complejidad Temporal}
+Explorar este espacio de búsqueda se daría en una complejidad temporal de $O(2 ^{|S|})$ , verificar que este subconjunto sea válido es $O(N^2)$ , al ser $N$ filas y $N$ columnas entonces $|S| = 2N $, luego nuestra complejidad temporal es $O(2^{2N}N^2)$
+\newpage
+\section{Algoritmo Flujo Máximo}
+\subsection{Correctitud}
+Separemos en dos conjuntos las filas $R$ y las columnas $C$, decimos que una fila de $R$ está relacionada con una columna de $C$  si y solo si existe un rectángulo negro en la intersección entre dicha fila y dicha columna, luego la respuesta a nuestro problema estaría dada por escoger el menor subconjunto de filas y columnas que cubra todas las relaciones, pues de esta manera garantizamos que cada rectángulo negro sea cubierto por al menos una fila o una columna. Formalizando, lo anterior es equivalente a un grafo $G$ con $2N$ vértices representando cada uno unívocamente una fila o columna de nuestro grid, y cuyas aristas significan las relaciones previamente dichas entre filas y columnas, por lo cual nuestra respuesta sería el cardinal del cubrimiento mínimo de vértices en el grafo $G$.
+Hallar el cubrimiento mínimo de vértices de un grafo cualquiera es un problema NP-Completo conocido, en este caso nuestro grafo $G$ es un grafo bipartito por construcción pues no existe aristas entre filas, ni aristas entre columnas, por lo cual nuestra bipartición sería el conjunto de vértices que representan las filas por un lado y el conjunto de vértices que representan las columnas por el otro. Luego se cumple que el cardinal del matching máximo en este grafo es igual al cardinal del cubrimiento mínimo de vértices en $G$ por ~\ref{D1}, basta hallar el primero para garantizar la respuesta, el cual por ~\ref{D2} puede ser hallado auxiliándose del conocido algoritmo de Edmonds-Karp para flujos.
+
+\subsubsection{\cite{konigTeorema}Teorema de König}\label{D1}
+\textit{En todo grafo bipartito se cumple que el número de aristas en el emparejamiento máximo es igual al número de vértices en el cubrimiento mínimo de vértices.}\\
+\newline
+Sea $G=(V,E)$ un grafo bipartito, y el conjunto de vértices $V$ sea particionado en un conjunto izquierdo $ L$ y un conjunto derecho $R$. Supongamos que $M$ es un emparejamiento máximo para $G$.
+Ningún vértice en un cubrimiento de vértices puede cubrir más de una arista de $M$, así que si un cubrimiento con $|M|$ vértices puede ser construido, tiene que ser un cubrimiento mínimo.\\\newline
+
+Para construir tal cubrimiento, sea $U$ el conjunto de vértices no matcheados en $L$(posiblemente vacío), y sea $Z$ el conjunto de vértices que está en $U$ o está conectado a $U$
+por caminos alternos (caminos que alterna entre aristas que están en el emparejamiento y aristas que no están en el emparejamiento ). Sea
+: $K=(L\setminus Z)\cup (R\cap Z)$.
+Cada arista $e \in E$ o pertenece a un camino alterno (y tiene un final derecho en $K$), o tiene un final izquierdo en $K$. Luego, si $e$ está emparejado pero no en un camino alterno, entonces su final izquierdo no puede estar en un camino alterno (para tal camino podría solo finalizar en $e$) y así pertenecer a $L\setminus Z$. Alternativamente, si $e$ est\'a sin emparejar pero no en un camino alterno, entonces su final izquierdo no puede estar en un camino alterno, para tal camino podría ser extendido al añadir $e$ a él. Así $K$ forma un cubrimiento de vértices.\\\newline
+
+Además, cada vértice en $K$
+es un final de una arista emparejada. Luego, cada vértice en $L\setminus Z$
+está emparejado porque $Z$ es un superconjunto de $U$, el conjunto de vértices izquierdos sin emparejar. Y cada vértice en $R\cap Z$  también tiene que ser emparejado, luego si allí existió un camino alterno a un vértice sin emparejar entonces cambiando el emparejamiento removiendo las aristas emparejadas de este camino y añadiendo las aristas no emparejadas en su lugar incrementaremos el tamaño del emparejamiento. Aun así, ninguna arista emparejada puede tener ambos de su finales en $K$. Así, $K$ es un cubrimiento de vértices de cardinalidad igual a $M$, y tiene que ser un cubrimiento de vértices mínimo.
+\subsubsection{\cite{eda2}Cardinal del Emparejamiento Máximo en un Grafo Bipartito (Algoritmo)}\label{D2} 
+\textbf{Construcci\'on:}\\
+Se construye la red de flujo $G'=(V',E',c)$ a partir del grafo no dirigido $G=(V,E)$ bipartito con $V=X \cup Y$, donde $V'=V \cup \{s,t\}$ y $E'=E \cup \{e|e=<s,u>,u \in X\} \cup \{e|e=<v,t>,v \in Y\}$. Donde para toda arista $e \in E'$ se tiene que $c(e)=1$.\\
+\newline
+\textbf{Proposici\'on:} Sea $G=(V,E)$ un grafo no dirigido y bipartito con $V=X \cup Y$ y sea $G'=(V',E',c)$ la red de flujo construida a partir de $G$. Si $M$ es un emparejamiento m\'aximo en $G$, entonces existe un flujo $f$ en $G'$ tal que $|f|=|M|$. Rec\'iprocamente si $f$ es un flujo definido en $G'$, entonces existe un emparejamiento $M$ en $G$ tal que $|M|=|f|$.\\
+\newline
+Demostremos primero que si $M$ es un emparejamiento m\'aximo en $G$ entonces existe un flujo $f$ en $G'$ tal que $|f|=|M|$.\\\newline
+Para esto tomemos cada arista $e=<u,v> \in M$ donde $u,v \in V'$ y a trav\'es de dicha arista pasemos una unidad de flujo desde $s$ hacia $t$ en $G'$. Esto lo haremos haciendo $f(<s,u>)=1$,$f(<u,v>)=1$ y $f(<v,t>)=1$ en la red de flujo $G'$. Sabemos que cada arista se utiliza una sola vez pues todas las aristas en el emparejamiento son diferentes y adem\'as ning\'un v\'ertice est\'a en m\'as de una arista por lo que no se repiten las aristas del tipo $<s,u>$ y $<v,t>$. Esta asignaci\'on de valores de $f$ a cada una de las aristas mencionadas define un flujo en $G'$ donde $|f|=|M|$. Dado que por cada arista del emparejamiento define un flujo de $G'$, donde $|f|=|M|$. Dado que por cada arista del emparejamiento llega una y sola una unidad de flujo desde $s$ hacia $t$ entonces $|f|=|M|$. Ahora demostremos que $f$ es un flujo v\'alido en $G'$.\\
+\newline
+El flujo $f$ cumple con la propiedad de la restriccio\'on de la capacidad:
+ \begin{center}
+$0 \leq f(u,v) \leq c(u,v)$
+\end{center}
+Pues cada arista se le asigna a lo sumo un valor de $f$ de solamente una unidad por lo que para toda arista $e \in E'$ se cumple que $0 \leq f(e) \leq 1$, y como la capacidad de todas las aristas es $1$, entonces $0 \leq f(e) \leq c(e)$.\\
+Tambi\'en se cumple la propiedad de la conservaci\'on del flujo:
+\begin{center}
+$\sum_{v \in V}f(v,u) = \sum_{v \in V}f(u,v)$
+\end{center}
+Pues cada v\'ertice $v \in V'-\{s,t\}$ sucede lo siguiente: Si el v\'ertice $v \in X$ entonces existe una arista $<s,v> \in E'$, luego se tienen dos casos:\\
+\newline
+(a) $v$ no se encuentra en ninguna arista perteneciente a $M$\\
+(b) $v$ forma parte de una arista perteneciente a $M$\\\newline
+Si es el caso (a) entonces ninguna arista que sale de $v$ se le asigna valor de flujo $1$, por lo que se mantiene en $0$. Y como ninguna arista que sale de $v$ se seleccion\'o tampoco entonces se le asigna una unidad de flujo a la arista $<s,v>$.\\
+Si el caso (b) entonces hay una sola arista $<v,w>$ que sale de $v$ donde $w \in Y$ y una \'unica arista que entra a $v$ que es $<s,v>$, ambas con un valor de flujo $1$, por lo cual se cumple la propiedad.
+\\\newline
+An\'alogamente se demuestra el caso en que $v \in Y$.
+\\\newline
+Ahora demostremos que si $f$ es un flujo de $G'$, entonces existe un emparejamiento $M$ en $G$ tal que $|M|=|f|$.
+\\\newline
+Sea $f$ un flujo de $G'$ y sea $M=\{<u,v>|u \in X,v \in Y$ y $f(<u,v>)=1\}$. Demostremos que $M$ es un emparejamiento en $G$ y que adem\'as $|M|=|f|$. Para cada arista $<u,v> \in M$ sabemos que la arista $<s,u>$ es la \'unica en entrar a $u$ y la arista $<v,t>$ la \'unica en salir de $v$ y como para toda arista $e \in E'$ se cumple que $c(e)=1$, entonces por conservaci\'on del flujo del v\'ertice $u$ solo puede salir una unidad de flujo que ser\'ia el flujo perteneciente a a la arista $<u,v>$, pues solo entra una arista a $u (<s,u>)$ con capcidad $1$.\\
+\newline
+An\'alogamente se demuestra que al v\'ertice $v$ solo pude entrar una arista con flujo $1$ y esa arista es precisamente $<u,v>$.\\\newline
+Luego de esta forma demostramos que cada arista $<u,v>$ es la \'unica en $M$ que contiene a los v\'ertices $u$ y $v$, pues si existiese otra, significar\'ia que o de $u$ sale m\'as de una unidad de flujo o que a $v$ entra m\'as de una unidad de flujo lo cual no puede suceder por lo demostrado anteriormente. Al quedar demostrado que cada v\'ertice $v \in V$ se encuentra en a lo sumo una de las aristas pertenecientes a $M$, por lo tanto $M$ es un emparejamiento.\\\newline
+Ahora demostremos que $|M|=|f|$. Para esto sea $P$ el conjunto de caminos tales que $P=\{s->u->v->t|u \in X, v \in Y$ y $<u,v> \in M\}$, primero demostremos que cada arista $<u,v> \in M$ se encuentra en solo un camino de $P$. Supongamos que existe una arista $<u,v>$ que est\'a en m\'as de un camino de $P$ , eso significar\'ia que hay dos aristas desde $s$ hacia $u$ y dos desde $v$ hacia $t$ lo cual no pude suceder dado como se construy\'o $G'$. Luego a cada arista $<u,v> \in M$ le corresponde uno y solo un camino en $P$ lo que implica que $|P|=|M|$. Ahora, cada camino en $P$ lleva una unidad de flujo desde $s$ hacia $t$ pues si $f(<u,v>)=1$, entonces $f(<s,u>)=1$ y $f(<v,t>)=1$ por conservaci\'on del flujo. Luego cada camino en $P$ traslada una unidad de flujo desde $s$ hacia $t$, por lo que $|f| \geq |P|=|M|$, ahora demostremos que son exactamente iguales. Supongamos que $|f| > |P|$, eso significa que existe otro camino $p'=s->a->b->t$ que no pertenece a $P$ donde todas las aristas en $p'$ poseen una unidad de flujo. Pero la arista $<a,b>$ en $p'$ cumple que $a \in X$ y $b \in Y$, luego como $f(<a,b>)=1$ entonces $<a,b> \in M$ lo que implica que $p' \in P$, luego como llegamos a una contradicci\'on entonces $|f|=|P|=|M|$.\\\newline
+Luego hallando el flujo m\'aximo en $G'$ mediante el algoritmo Edmonds Karp demostrada su correctitud en EDA 2, tenemos el cardinal del emparejamiento m\'aximo en G.\\
+
+\textbf{Complejidad Temporal:}Este algoritmo tiene una complejidad temporal de $O(|V||E|^2)$ dado que Edmonds Karp tiene esta complejidad y construir $G'$ a partir de $G$ es $O(|V|+|E|)$ ,por lo cual $O(|V|+|E|)+O(|V||E|^2)=O(|V||E|^2)$
+
+\subsection{Complejidad Temporal}
+Est\'a dada por la complejidad temporal de ~\ref{D2} ,por lo  cual es $O(|V||E|^2)$
+
+
+\renewcommand{\bibname}{Referencias}
+
+\begin{thebibliography}{}
+
+\bibitem{eda2}
+Colectivo Estructura de Datos y Algoritmos (2020). Flujo M\'aximo. CP8 EDA Max Flow Respuestas, p\'aginas 15-18.
+\bibitem{konigTeorema}
+Wikipedia. (2024). Teorema de Kőnig (teoría de grafos). Recuperado de \texttt{https://es.wikipedia.org/wiki/Teorema\_de\_K\%C3\%B6nig\_(teor\%C3\%ADa\_de\_grafos)}
+
+\addcontentsline{toc}{chapter}{Referencias}
+
+\end{thebibliography}
+ 
+
+\end{document}
